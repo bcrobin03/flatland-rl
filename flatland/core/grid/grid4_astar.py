@@ -7,7 +7,7 @@ from flatland.core.transition_map import GridTransitionMap
 from flatland.utils.decorators import enable_infrastructure_lru_cache
 from flatland.utils.ordered_set import OrderedSet
 
-astar_priority = False
+astar_priority = True
 
 
 class AStarNode:
@@ -56,7 +56,7 @@ def get_priority():
 
 def a_star(grid_map: GridTransitionMap, start: IntVector2D, end: IntVector2D,
            a_star_distance_function: IntVector2DDistance = Vec2d.get_manhattan_distance, avoid_rails=False,
-           respect_transition_validity=True, forbidden_cells: IntVector2DArray = None) -> IntVector2DArray:
+           respect_transition_validity=True, forbidden_cells = None) -> IntVector2DArray:
     """
 
     :param avoid_rails:
@@ -70,7 +70,7 @@ def a_star(grid_map: GridTransitionMap, start: IntVector2D, end: IntVector2D,
     :param respect_transition_validity: Whether or not a-star respect allowed transitions on the grid map.
             - True: Respects the validity of transition. This generates valid paths, of no path if it cannot be found
             - False: This always finds a path, but the path might be illegal and thus needs to be fixed afterwards
-    :param forbidden_cells: List of cells where the path cannot pass through. Used to avoid certain areas of Grid map
+    :param forbidden_cells: Set of cells where the path cannot pass through. Used to avoid certain areas of Grid map
     :return: IF a path is found a ordered list of al cells in path is returned
     """
     """
@@ -88,7 +88,6 @@ def a_star(grid_map: GridTransitionMap, start: IntVector2D, end: IntVector2D,
 
         while len(open_nodes) > 0:
             # get node with current shortest est. path (lowest f)
-            current_node = None
             current_node = heapq.heappop(open_nodes)
             node_in_heap.remove(current_node)
             # pop current off open list, add to closed list
@@ -249,4 +248,5 @@ def a_star(grid_map: GridTransitionMap, start: IntVector2D, end: IntVector2D,
 
             # no full path found
             if len(open_nodes) == 0:
+                print("No way found")
                 return []

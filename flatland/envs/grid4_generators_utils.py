@@ -19,7 +19,7 @@ def connect_rail_in_grid_map(grid_map: GridTransitionMap, start: IntVector2D, en
                              rail_trans: RailEnvTransitions,
                              a_star_distance_function: IntVector2DDistance = Vec2d.get_manhattan_distance,
                              flip_start_node_trans: bool = False, flip_end_node_trans: bool = False,
-                             respect_transition_validity: bool = True, forbidden_cells: IntVector2DArray = None,
+                             respect_transition_validity: bool = True, forbidden_cells = None,
                              avoid_rail=False) -> IntVector2DArray:
     """
         Creates a new path [start,end] in `grid_map.grid`, based on rail_trans, and

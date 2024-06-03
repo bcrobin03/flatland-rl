@@ -565,8 +565,9 @@ class RailEnv(Environment):
             # This is for storing and later checking for conflicts of agents trying to occupy same cell
             self.motionCheck.addAgent(i_agent, agent.position, new_position)
 
+        self.motionCheck.construct_graph()
         # Find conflicts between trains trying to occupy same cell
-        self.motionCheck.find_conflicts()
+        self.motionCheck.fix_conflicts()
 
         for agent in self.agents:
             i_agent = agent.handle
@@ -575,7 +576,7 @@ class RailEnv(Environment):
             if agent.malfunction_handler.in_malfunction:
                 movement_allowed = False
             else:
-                movement_allowed = self.motionCheck.check_motion(i_agent, agent.position)
+                movement_allowed = self.motionCheck.check_motion(i_agent)
 
             movement_inside_cell = agent.state == TrainState.STOPPED and not agent.speed_counter.is_cell_exit
             movement_allowed = movement_allowed or movement_inside_cell

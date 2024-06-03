@@ -98,7 +98,7 @@ def test_reward_function_conflict(rendering=False):
     env.reset()
 
     # set the initial position
-    agent = env.agents[0]
+    agent = env.agents[1]
     agent.position = (5, 6)  # south dead-end
     agent.initial_position = (5, 6)  # south dead-end
     agent.direction = 0  # north
@@ -107,7 +107,7 @@ def test_reward_function_conflict(rendering=False):
     agent.moving = True
     agent._set_state(TrainState.MOVING)
 
-    agent = env.agents[1]
+    agent = env.agents[0]
     agent.position = (3, 8)  # east dead-end
     agent.initial_position = (3, 8)  # east dead-end
     agent.direction = 3  # west
@@ -117,12 +117,12 @@ def test_reward_function_conflict(rendering=False):
     agent._set_state(TrainState.MOVING)
 
     env.reset(False, False)
-    env.agents[0].moving = True
     env.agents[1].moving = True
-    env.agents[0]._set_state(TrainState.MOVING)
+    env.agents[0].moving = True
     env.agents[1]._set_state(TrainState.MOVING)
-    env.agents[0].position = (5, 6)
-    env.agents[1].position = (3, 8)
+    env.agents[0]._set_state(TrainState.MOVING)
+    env.agents[1].position = (5, 6)
+    env.agents[0].position = (3, 8)
     print("\n")
     print(env.agents[0])
     print(env.agents[1])
@@ -134,31 +134,31 @@ def test_reward_function_conflict(rendering=False):
     iteration = 0
     expected_positions = {
         0: {
-            0: (5, 6),
-            1: (3, 8)
+            1: (5, 6),
+            0: (3, 8)
         },
         # both can move
         1: {
-            0: (4, 6),
-            1: (3, 7)
+            1: (4, 6),
+            0: (3, 7)
         },
         # first can move, second stuck
         2: {
-            0: (3, 6),
-            1: (3, 7)
+            1: (3, 6),
+            0: (3, 7)
         },
         # both stuck from now on
         3: {
-            0: (3, 6),
-            1: (3, 7)
+            1: (3, 6),
+            0: (3, 7)
         },
         4: {
-            0: (3, 6),
-            1: (3, 7)
+            1: (3, 6),
+            0: (3, 7)
         },
         5: {
-            0: (3, 6),
-            1: (3, 7)
+            1: (3, 6),
+            0: (3, 7)
         },
     }
     while iteration < 5:
@@ -168,6 +168,7 @@ def test_reward_function_conflict(rendering=False):
         for agent in env.agents:
             # assert rewards[agent.handle] == 0
             expected_position = expected_positions[iteration + 1][agent.handle]
+            print(agent, ": ", agent.position)
             assert agent.position == expected_position, "[{}] agent {} at {}, expected {}".format(iteration + 1,
                                                                                                   agent.handle,
                                                                                                   agent.position,
@@ -188,7 +189,7 @@ def test_reward_function_waiting(rendering=False):
     env.reset()
 
     # set the initial position
-    agent = env.agents[0]
+    agent = env.agents[1]
     agent.initial_position = (3, 8)  # east dead-end
     agent.position = (3, 8)  # east dead-end
     agent.direction = 3  # west
@@ -197,7 +198,7 @@ def test_reward_function_waiting(rendering=False):
     agent.moving = True
     agent._set_state(TrainState.MOVING)
 
-    agent = env.agents[1]
+    agent = env.agents[0]
     agent.initial_position = (5, 6)  # south dead-end
     agent.position = (5, 6)  # south dead-end
     agent.direction = 0  # north
@@ -207,12 +208,12 @@ def test_reward_function_waiting(rendering=False):
     agent._set_state(TrainState.MOVING)
 
     env.reset(False, False)
-    env.agents[0].moving = True
     env.agents[1].moving = True
-    env.agents[0]._set_state(TrainState.MOVING)
+    env.agents[0].moving = True
     env.agents[1]._set_state(TrainState.MOVING)
-    env.agents[0].position = (3, 8)
-    env.agents[1].position = (5, 6)
+    env.agents[0]._set_state(TrainState.MOVING)
+    env.agents[1].position = (3, 8)
+    env.agents[0].position = (5, 6)
 
     if rendering:
         renderer = RenderTool(env, gl="PILSVG")
@@ -222,68 +223,68 @@ def test_reward_function_waiting(rendering=False):
     expectations = {
         0: {
             'positions': {
-                0: (3, 8),
-                1: (5, 6),
+                1: (3, 8),
+                0: (5, 6),
             },
             'rewards': [0, 0],
         },
         1: {
             'positions': {
-                0: (3, 7),
-                1: (4, 6),
+                1: (3, 7),
+                0: (4, 6),
             },
             'rewards': [0, 0],
         },
         # second agent has to wait for first, first can continue
         2: {
             'positions': {
-                0: (3, 6),
-                1: (4, 6),
+                1: (3, 6),
+                0: (4, 6),
             },
             'rewards': [0, 0],
         },
         # both can move again
         3: {
             'positions': {
-                0: (3, 5),
-                1: (3, 6),
+                1: (3, 5),
+                0: (3, 6),
             },
             'rewards': [0, 0],
         },
         4: {
             'positions': {
-                0: (3, 4),
-                1: (3, 7),
+                1: (3, 4),
+                0: (3, 7),
             },
             'rewards': [0, 0],
         },
         # second reached target
         5: {
             'positions': {
-                0: (3, 3),
-                1: (3, 8),
+                1: (3, 3),
+                0: (3, 8),
             },
             'rewards': [0, 0],
         },
         6: {
             'positions': {
-                0: (3, 2),
-                1: (3, 8),
+                1: (3, 2),
+                0: (3, 8),
             },
             'rewards': [0, 0],
         },
         # first reaches, target too
         7: {
             'positions': {
-                0: (3, 1),
-                1: (3, 8),
+                1: (3, 1),
+                0: (3, 8),
             },
             'rewards': [0, 0],
         },
         8: {
             'positions': {
-                0: (3, 1),
-                1: (3, 8),
+                1: (3, 1),
+                0: (3, 8),
             },
             'rewards': [0, 0],
         },
